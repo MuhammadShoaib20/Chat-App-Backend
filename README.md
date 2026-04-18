@@ -1,315 +1,306 @@
-# SyncChat – Backend
+# ⚙️ SyncChat – Backend
 
-This is the backend for a real-time chat application built with the **MERN stack**. It provides RESTful APIs and WebSocket (Socket.io) services for user authentication, messaging, group chats, file uploads, push notifications, and more.
+This is the backend for a real-time chat application built with the **MERN stack**. It provides RESTful APIs and WebSocket (Socket.io) services for authentication, messaging, group chats, file uploads, push notifications, and more.
 
-🔗 **Live Demo:** [https://chat-app-theta-seven-44.vercel.app/](https://chat-app-theta-seven-44.vercel.app/)
-🐙 **GitHub:** [https://github.com/MuhammadShoaib20/chat-app](https://github.com/MuhammadShoaib20/chat-app)
-🖥️ **Backend API:** [https://chat-app-14ut.onrender.com/api](https://chat-app-14ut.onrender.com/api)
+---
+
+## 🔗 Links
+
+* 🚀 **Live Demo:**
+  https://chat-app-frontend-gules-one.vercel.app/
+
+* 🐙 **GitHub Repository:**
+  https://github.com/MuhammadShoaib20/Chat-App-Backend
+
+* 🖥️ **Backend API:**
+  https://chat-app-backend-production-13f7.up.railway.app/api
 
 ---
 
 ## 🚀 Features
 
-- **User Authentication** – JWT-based login/register with password hashing (bcryptjs)
-- **Real-time Messaging** – Socket.io for instant delivery, typing indicators, read receipts
-- **Group Chats** – Create groups, add/remove members, assign admins, update group info
-- **File Uploads** – Cloudinary integration with local fallback; supports images & documents
-- **Push Notifications** – Web push notifications for offline users (optional VAPID keys)
-- **Conversation Management** – List, hide, delete, and search conversations
-- **Message Actions** – Edit, delete, and react to messages
-- **Block/Unblock Users** – Prevent messages from blocked users
-- **Rate Limiting** – Protect endpoints from abuse
-- **Redis Caching** – Cache user and conversation data for performance (optional)
-- **Security** – Helmet, CORS, input validation, and secure headers
+* 🔐 **User Authentication**
+  → JWT-based login/register with bcrypt hashing
+
+* ⚡ **Real-time Messaging**
+  → Socket.io, typing indicators, read receipts
+
+* 👥 **Group Chats**
+  → Create/manage groups, assign admins
+
+* 📁 **File Uploads**
+  → Cloudinary support + local fallback
+
+* 🔔 **Push Notifications (Optional)**
+  → Web push with VAPID keys
+
+* 💬 **Conversation Management**
+  → List, hide, delete, search
+
+* ✏️ **Message Actions**
+  → Edit, delete, reactions
+
+* 🚫 **Block/Unblock Users**
+
+* 🚀 **Performance Optimization**
+  → Redis caching (optional)
+
+* 🛡️ **Security**
+  → Helmet, CORS, validation, rate limiting
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Technology | Purpose |
-|---|---|
-| Node.js + Express | Backend framework |
-| MongoDB + Mongoose | Database and ODM |
-| Socket.io | Real-time WebSocket communication |
-| Redis | Caching and socket.io adapter (optional) |
-| Cloudinary | File storage (optional) |
-| JWT | Authentication tokens |
-| bcryptjs | Password hashing |
-| Multer | File upload handling |
-| Web-Push | Push notifications |
-| Helmet, CORS | Security middleware |
-| Express Rate Limit | Rate limiting |
+| Technology         | Purpose                 |
+| ------------------ | ----------------------- |
+| Node.js + Express  | Backend Framework       |
+| MongoDB + Mongoose | Database + ODM          |
+| Socket.io          | Real-time Communication |
+| Redis              | Caching (optional)      |
+| Cloudinary         | File Storage (optional) |
+| JWT                | Authentication          |
+| bcryptjs           | Password Hashing        |
+| Multer             | File Uploads            |
+| Web-Push           | Notifications           |
+| Helmet + CORS      | Security                |
+| Express Rate Limit | API Protection          |
 
 ---
 
 ## 📦 Prerequisites
 
-- Node.js **v18 or higher**
-- MongoDB (local or Atlas)
-- Redis (optional – for production scaling)
-- Cloudinary account (optional – for cloud file storage)
+* Node.js **v18+**
+* MongoDB (Local / Atlas)
+* Redis (optional)
+* Cloudinary (optional)
 
 ---
 
 ## 🔧 Installation & Setup
 
-**1. Clone the repository:**
+### 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/MuhammadShoaib20/chat-app.git
-cd chat-app/backend
+git clone https://github.com/MuhammadShoaib20/Chat-App-Backend.git
+cd Chat-App-Backend
 ```
 
-**2. Install dependencies:**
+### 2️⃣ Install Dependencies
 
 ```bash
 npm install
 ```
 
-**3. Set up environment variables:**
+### 3️⃣ Environment Variables
 
-Create a `.env` file in the root of the `backend/` folder:
+Create `.env` file:
 
 ```env
 # Server
 PORT=5000
 NODE_ENV=development
 
-# MongoDB
+# Database
 MONGO_URI=your_mongodb_connection_string
 
 # JWT
-JWT_SECRET=your_jwt_secret_key
+JWT_SECRET=your_secret_key
 JWT_EXPIRE=30d
 
-# Client URL (CORS) – comma separated if multiple
-CLIENT_URL=http://localhost:5173,https://your-frontend-domain.com
+# Frontend URL (CORS)
+CLIENT_URL=http://localhost:5173,https://chat-app-frontend-gules-one.vercel.app
 
 # Cloudinary (optional)
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 
 # Redis (optional)
-REDIS_URL=redis://:your_password@host:port
+REDIS_URL=
 
-# VAPID Keys (for push notifications, optional)
+# Push Notifications (optional)
 VAPID_SUBJECT=mailto:your-email@example.com
-VAPID_PUBLIC_KEY=your_public_key
-VAPID_PRIVATE_KEY=your_private_key
+VAPID_PUBLIC_KEY=
+VAPID_PRIVATE_KEY=
 ```
 
-> **Notes:**
-> - If Cloudinary keys are not set, files will be saved locally in the `uploads/` folder.
-> - Redis is optional but recommended for scaling Socket.io and caching.
-> - For production, use MongoDB Atlas and set `MONGO_URI` accordingly.
-> - Set `CLIENT_URL` to your actual frontend domain(s) (comma-separated if multiple).
+### 📌 Notes
 
-**4. Start MongoDB and Redis** (if using locally):
+* If Cloudinary is not configured → files saved locally (`/uploads`)
+* Redis is optional but recommended for scaling
+* Use **MongoDB Atlas** for production
+* `CLIENT_URL` must match frontend domain (CORS)
 
-- MongoDB: ensure `mongod` is running.
-- Redis: start `redis-server` (or use your Redis Cloud URL).
+---
 
-**5. Run the server:**
+### 4️⃣ Run Services
+
+* Start MongoDB → `mongod`
+* Start Redis (if used) → `redis-server`
+
+---
+
+### 5️⃣ Run Server
 
 ```bash
-npm run dev    # development with nodemon
-# or
-npm start      # production
+npm run dev   # development
+npm start     # production
 ```
 
-The server will start on `http://localhost:5000`.
+👉 Server runs on: **http://localhost:5000**
 
 ---
 
 ## 🌍 Environment Variables
 
-| Variable | Description | Required |
-|---|---|---|
-| `PORT` | Port the server listens on | No (default 5000) |
-| `NODE_ENV` | `development` or `production` | No |
-| `MONGO_URI` | MongoDB connection string | ✅ Yes |
-| `JWT_SECRET` | Secret for signing JWT tokens | ✅ Yes |
-| `JWT_EXPIRE` | JWT expiration (e.g., `30d`) | No |
-| `CLIENT_URL` | Frontend URL(s) for CORS (comma-separated) | ✅ Yes |
-| `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name | No |
-| `CLOUDINARY_API_KEY` | Cloudinary API key | No |
-| `CLOUDINARY_API_SECRET` | Cloudinary API secret | No |
-| `REDIS_URL` | Redis connection URL | No |
-| `VAPID_SUBJECT` | Email address for VAPID | No |
-| `VAPID_PUBLIC_KEY` | VAPID public key | No |
-| `VAPID_PRIVATE_KEY` | VAPID private key | No |
+| Variable     | Description               | Required |
+| ------------ | ------------------------- | -------- |
+| PORT         | Server port               | ❌ No     |
+| NODE_ENV     | Environment               | ❌ No     |
+| MONGO_URI    | MongoDB connection string | ✅ Yes    |
+| JWT_SECRET   | JWT signing key           | ✅ Yes    |
+| JWT_EXPIRE   | Token expiry              | ❌ No     |
+| CLIENT_URL   | Frontend URL(s) for CORS  | ✅ Yes    |
+| CLOUDINARY_* | Cloudinary credentials    | ❌ No     |
+| REDIS_URL    | Redis connection          | ❌ No     |
+| VAPID_*      | Push notification keys    | ❌ No     |
 
 ---
 
 ## 📁 Project Structure
 
-```
+```bash
 backend/
 ├── src/
 │   ├── config/
-│   │   ├── cloudinary.js
-│   │   ├── db.js
-│   │   ├── redis.js
-│   │   ├── socket.js
-│   │   └── webpush.js
 │   ├── controllers/
-│   │   ├── authController.js
-│   │   ├── conversationController.js
-│   │   ├── messageController.js
-│   │   └── userController.js
 │   ├── middleware/
-│   │   ├── authMiddleware.js
-│   │   ├── errorMiddleware.js
-│   │   └── rateLimiter.js
 │   ├── models/
-│   │   ├── Conversation.js
-│   │   ├── Message.js
-│   │   ├── PushSubscription.js
-│   │   └── User.js
 │   ├── routes/
-│   │   ├── authRoutes.js
-│   │   ├── conversationRoutes.js
-│   │   ├── messageRoutes.js
-│   │   ├── testRoutes.js
-│   │   ├── uploadRoutes.js
-│   │   └── userRoutes.js
 │   ├── sockets/
-│   │   └── index.js
 │   └── utils/
-│       ├── generateToken.js
-│       └── notificationHelper.js
 ├── uploads/
 ├── .env
 ├── server.js
-├── package.json
-└── README.md
+└── package.json
 ```
 
 ---
 
-## 📡 API Endpoints
+## 📡 API Overview
 
-All endpoints are prefixed with `/api`. Authentication via `Authorization: Bearer <token>` header.
+### 🔐 Auth (`/api/auth`)
 
-### Authentication (`/api/auth`)
+| Method | Endpoint  | Description   |
+| ------ | --------- | ------------- |
+| POST   | /register | Register user |
+| POST   | /login    | Login user    |
+| GET    | /profile  | Get profile   |
+| POST   | /logout   | Logout        |
 
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| POST | `/register` | Register a new user | No |
-| POST | `/login` | Login user | No |
-| GET | `/profile` | Get current user profile | Yes |
-| POST | `/logout` | Logout user | Yes |
+---
 
-### Users (`/api/users`)
+### 👤 Users (`/api/users`)
 
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| GET | `/profile` | Get user profile | Yes |
-| PUT | `/profile` | Update profile (avatar) | Yes |
-| GET | `/search` | Search users by username/email | Yes |
-| POST | `/block/:id` | Block a user | Yes |
-| POST | `/unblock/:id` | Unblock a user | Yes |
-| GET | `/block-status/:id` | Get block status with user | Yes |
-| POST | `/subscribe` | Save push subscription | Yes |
+* Profile management
+* Search users
+* Block / Unblock
+* Push subscription
 
-### Conversations (`/api/conversations`)
+---
 
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| GET | `/` | Get all conversations | Yes |
-| POST | `/` | Create conversation (1:1 or group) | Yes |
-| GET | `/:id` | Get conversation details | Yes |
-| PUT | `/:id` | Update group info | Yes |
-| DELETE | `/:id` | Delete conversation | Yes |
-| POST | `/:id/participants` | Add participants | Yes |
-| DELETE | `/:id/participants/:userId` | Remove participant | Yes |
-| POST | `/:id/hide` | Hide conversation | Yes |
-| POST | `/:id/unhide` | Unhide conversation | Yes |
+### 💬 Conversations (`/api/conversations`)
 
-### Messages (`/api/messages`)
+* Create chat / group
+* Manage participants
+* Hide / delete
 
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| GET | `/conversations/:conversationId` | Get paginated messages | Yes |
-| POST | `/` | Send a message (REST) | Yes |
-| POST | `/read` | Mark messages as read | Yes |
-| PUT | `/:id` | Edit a message | Yes |
-| DELETE | `/:id` | Delete a message (soft) | Yes |
-| POST | `/:id/reactions` | Add/remove reaction | Yes |
-| GET | `/search` | Search messages | Yes |
+---
 
-### Uploads (`/api/upload`)
+### 📨 Messages (`/api/messages`)
 
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| POST | `/` | Upload a file (image/document) | Yes |
+* Send / edit / delete
+* Reactions
+* Search messages
 
-### Test (`/api/test`)
+---
 
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| GET | `/health` | Health check | No |
+### 📁 Upload (`/api/upload`)
+
+* Upload images/documents
+
+---
+
+### ❤️ Health Check (`/api/test`)
+
+* `GET /health`
 
 ---
 
 ## 🔌 Socket.io Events
 
-### Client → Server
+### 📤 Client → Server
 
-| Event | Payload | Description |
-|---|---|---|
-| `join-conversation` | `conversationId` | Join a conversation room |
-| `leave-conversation` | `conversationId` | Leave conversation room |
-| `typing-start` | `{ conversationId }` | User is typing |
-| `typing-stop` | `{ conversationId }` | User stopped typing |
-| `send-message` | `{ conversationId, content, type, mediaUrl }` | Send a new message |
-| `edit-message` | `{ messageId, content }` | Edit a message |
-| `delete-message` | `{ messageId }` | Soft delete a message |
-| `add-reaction` | `{ messageId, emoji }` | Toggle reaction |
+* join-conversation
+* leave-conversation
+* typing-start / stop
+* send-message
+* edit-message
+* delete-message
+* add-reaction
 
-### Server → Client
+### 📥 Server → Client
 
-| Event | Payload | Description |
-|---|---|---|
-| `new-message` | `Message` object | New message in conversation |
-| `message-updated` | `Message` object | Message edited or deleted |
-| `messages-read` | `{ userId, messageIds, conversationId }` | Messages marked as read |
-| `user-typing` | `{ userId, username, conversationId }` | Typing indicator |
-| `user-stopped-typing` | `{ userId, conversationId }` | Stop typing |
-| `conversation-updated` | `Conversation` object | Conversation changed |
-| `participant-added` | `{ conversationId, participants }` | New member added |
-| `participant-removed` | `{ conversationId, userId }` | Member removed |
-| `user-online` | `userId` | User came online |
-| `user-offline` | `userId` | User went offline |
-| `online-users` | `[userId]` | List of online users on connect |
-| `error` | `{ message }` | Error message |
+* new-message
+* message-updated
+* messages-read
+* user-typing
+* user-stopped-typing
+* conversation-updated
+* user-online / offline
+* online-users
 
 ---
 
-## 🚀 Deployment (Render)
+## 🚀 Deployment (Railway)
+
+### Steps:
 
 1. Push code to GitHub
-2. Create a new **Web Service** on Render, connect your repo
-3. Build command: `npm install`
-4. Start command: `npm start`
-5. Add all environment variables from your `.env`
+2. Create Web Service on Railway
+3. Build command → `npm install`
+4. Start command → `npm start`
+5. Add environment variables
 6. Deploy
 
-> ⚠️ Set `NODE_ENV=production`, ensure MongoDB Atlas URI is correct, and `CLIENT_URL` matches your frontend domain.
+⚠️ **Important:**
+
+* Set `NODE_ENV=production`
+* Use MongoDB Atlas
+* Ensure `CLIENT_URL` is correct
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request.
+Contributions are welcome!
+
+* Open an issue
+* Submit a PR
+* Discuss major changes first
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** – see the [LICENSE](LICENSE) file for details.
+MIT License
 
 ---
 
-<div align="center">Built with ❤️ by <a href="https://github.com/MuhammadShoaib20">Muhammad Shoaib</a></div>
+<div align="center">
+
+❤️ Built with passion by
+**Muhammad Shoaib**
+
+</div>
