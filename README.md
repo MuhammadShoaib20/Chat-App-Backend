@@ -263,6 +263,53 @@ backend/
 
 ---
 
+## 🚀 Deployment (Render)
+
+Production URLs:
+
+* **Frontend (Vercel):** https://chat-app-frontend-gules-one.vercel.app
+* **Backend (Render):** https://chat-app-backend-zeqs.onrender.com
+
+### Steps
+
+1. Push the code to GitHub
+2. Render → **New → Web Service** → connect this repository
+3. **Root directory** → `backend`
+4. **Build command** → `npm install`
+5. **Start command** → `npm start`
+6. Add the environment variables below, then deploy
+
+### Environment variables (Render → Environment)
+
+| Variable        | Value                                             | Required |
+| --------------- | ------------------------------------------------- | -------- |
+| `MONGO_URI`     | MongoDB Atlas connection string                   | ✅ Yes    |
+| `JWT_SECRET`    | long random secret                                | ✅ Yes    |
+| `CLIENT_URL`    | `https://chat-app-frontend-gules-one.vercel.app`  | ✅ Yes    |
+| `NODE_ENV`      | `production`                                      | ⚠️ Recommended |
+| `PORT`          | **do not set** – Render injects it automatically  | ❌ No     |
+| `REDIS_URL`     | `rediss://default:<password>@<host>:<port>`        | ❌ Optional |
+| `CLOUDINARY_*`  | Cloudinary credentials                            | ❌ Optional |
+| `VAPID_*`       | push notification keys                            | ❌ Optional |
+
+⚠️ **`REDIS_URL` must be a full connection URL.** A bare password/token is
+treated by `ioredis` as a *hostname*, which fails DNS resolution and triggers
+endless reconnect attempts. Use `rediss://` when the provider requires TLS
+(Redis Cloud, Upstash, Render Key Value).
+
+**Redis is optional:** when it is missing or unreachable the API keeps serving
+traffic, caching is skipped, and Socket.IO falls back to its in-memory adapter
+(single instance). If you scale to multiple instances you must set a working
+`REDIS_URL`.
+
+### Health check
+
+`GET /api/health` → **200** when the API and MongoDB are healthy (the response
+also includes the Redis status). Set Render's **Health Check Path** to
+`/api/health`.
+
+---
+
 ## 🚀 Deployment (Railway)
 
 ### Steps:

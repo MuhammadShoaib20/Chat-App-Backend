@@ -1,19 +1,58 @@
 const { Server } = require('socket.io');
 const jwt = require('jsonwebtoken');
 const { createAdapter } = require('@socket.io/redis-adapter');
-const { pubClient, subClient } = require('./redis');
+const {
+  pubClient,
+  subClient,
+  isRedisEnabled,
+  waitForRedisReady,
+  describeRedisTarget,
+} = require('./redis');
+const { socketCorsOptions } = require('./cors');
 const User = require('../models/User');
 const Conversation = require('../models/Conversation');
 
+/**
+ * Attach the Redis adapter only when Redis is actually usable.
+ *
+ * `createAdapter()` immediately calls psubscribe()/subscribe() and does NOT
+ * catch the returned promise, so attaching it while Redis is unreachable
+ * produces an unhandled promise rejection (MaxRetriesPerRequestError) which
+ * used to crash the whole process. Gating on readiness keeps the API alive and
+ * Socket.IO keeps working through the default in-memory adapter.
+ */
+const attachRedisAdapter = (io) => {
+  if (!isRedisEnabled()) {
+    console.warn('⚠️  Socket.IO: using the in-memory adapter (Redis disabled) → single instance only.');
+    return;
+  }
+
+  waitForRedisReady(8000)
+    .then((ready) => {
+      if (!ready) {
+        console.warn(`⚠️  Socket.IO: Redis (${describeRedisTarget()}) not reachable within 8s.`);
+        console.warn('⚠️  Socket.IO: falling back to the in-memory adapter → single instance only.');
+        return;
+      }
+      try {
+        io.adapter(createAdapter(pubClient, subClient));
+        console.log('✅ Socket.IO Redis adapter attached (multi-instance ready)');
+      } catch (err) {
+        console.error('❌ Socket.IO: could not attach the Redis adapter, keeping the in-memory adapter:', err.message);
+      }
+    })
+    .catch((err) => {
+      console.error('❌ Socket.IO: Redis adapter setup failed, keeping the in-memory adapter:', err && err.message);
+    });
+};
+
 const setupSocket = (server) => {
   const io = new Server(server, {
-    cors: {
-      origin: process.env.CLIENT_URL || 'http://localhost:5173',
-      credentials: true,
-    },
+    // Shared, comma-safe origin allow-list (same as the Express CORS config)
+    cors: socketCorsOptions,
   });
 
-  io.adapter(createAdapter(pubClient, subClient));
+  attachRedisAdapter(io);
 
   // Authentication middleware
   io.use(async (socket, next) => {
@@ -33,6 +72,7 @@ const setupSocket = (server) => {
       next(new Error('Authentication error: Invalid token'));
     }
   });
+
 
   /**
    * Helper to find all unique user IDs that share a conversation with the current user
