@@ -9,7 +9,13 @@ const setupSocket = require('./src/config/socket');
 const { notFound, errorHandler } = require('./src/middleware/errorMiddleware');
 const { apiLimiter, authLimiter, messageLimiter } = require('./src/middleware/rateLimiter');
 
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, '.env') });
+
+// Verify .env loaded
+console.log('Environment check:');
+console.log('- MONGO_URI:', process.env.MONGO_URI ? '✅ Loaded' : '❌ Missing');
+console.log('- REDIS_URL:', process.env.REDIS_URL ? '✅ Loaded' : '❌ Missing');
+
 connectDB();
 
 const app = express();
